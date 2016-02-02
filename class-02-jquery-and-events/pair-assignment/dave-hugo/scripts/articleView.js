@@ -28,30 +28,42 @@ articleView.populateFilters = function() {
 
 articleView.handleAuthorFilter = function() {
   $('#author-filter').on('change', function() {
-    if ($(this).val()) {
-      // TODO: If the select box was changed to an option that has a value, we need to hide all the articles,
-      //       and then show just the ones that match for the author that was selected.
-      //       Use an "attribute selector" to find those articles, and fade them in for the reader.
-      $('#articles').hide();
-      $('#articles').show('fast', function() {
-        $('#articles').append(this.toHtml);
-      })
-
+    console.log($(this).val());
+   if ($(this).val()) {
+//       // TODO: If the select box was changed to an option that has a value, we need to hide all the articles,
+//       //       and then show just the ones that match for the author that was selected.
+//       //       Use an "attribute selector" to find those articles, and fade them in for the reader.
+var $thisVal = $(this).val();
+var $article = $('article');
+$article.not('[data-author = "' + $thisVal + '"]').hide();
+//
+//
+//
     } else {
-      // TODO: If the select box was changed to an option that is blank, we should
-      //       show all the articles, except the one article we are using as a template.
-
+//       // TODO: If the select box was changed to an option that is blank, we should
+//       //       show all the articles, except the one article we are using as a template.
+//
     }
-    $('#category-filter').val('');
+         $('#category-filter').val('');
   });
-};
+ };
 
 articleView.handleCategoryFilter = function() {
+    $('#category-filter').on('change', function() {
   // TODO: Just like we do for #author-filter above, we should handle change events on the #category-filter element.
   //       When an option with a value is selected, hide all the articles, then reveal the matches.
   //       When the blank (default) option is selected, show all the articles, except for the template.
   //       Be sure to reset the #author-filter while you are at it!
+if ($(this).val()) {
+  var $thisVal = $(this).val();
+  var $article = $('article');
+  $article.not('[data-category = "' + $thisVal + '"]').hide();
 
+
+} else {
+
+}
+});
 };
 
 articleView.handleMainNav = function() {
@@ -60,7 +72,9 @@ articleView.handleMainNav = function() {
   //       single .tab-content section that is associated with the clicked .tab element.
   //       So: You need to dynamically build a selector string with the correct ID, based on the
   //       data available to you on the .tab element that was clicked.
-  $('.main-nav').on(/* CODE GOES HERE */);
+  $('.main-nav').on('click', function() {
+    $
+  }/* CODE GOES HERE */);
 
   $('.main-nav .tab:first').click(); // Let's now trigger a click on the first .tab element, to set up the page.
 };
@@ -80,4 +94,6 @@ articleView.setTeasers = function() {
 // TODO: Call all of the above functions, once we are sure the DOM is ready.
 $(document).ready(function() {
   articleView.populateFilters();
+  articleView.handleAuthorFilter();
+  articleView.handleCategoryFilter();
 });
