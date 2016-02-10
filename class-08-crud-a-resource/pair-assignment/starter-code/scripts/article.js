@@ -22,14 +22,15 @@
   // TODO: Set up a DB table for articles.
   Article.createTable = function(callback) {
     webDB.execute(
-      'CREATE TABLES IF NOT EXISTS articles('+' id INTEGER PRIMARY KEY,' +
+      'CREATE TABLES IF NOT EXISTS articles(' +
+      'id INTEGER PRIMARY KEY,' +
       'title VARCHAR(255) NOT NULL,' +
       'author VARCHAR(255) NOT NULL,' +
       'authorUrl VARCHAR (255),' +
       'category VARCHAR(20),' +
       'publishedOn DATETIME,' +
       'body TEXT NOT NULL);',
-      // ');',
+
       function(result) {
         console.log('Successfully set up the articles table.', result);
         if (callback) callback();
@@ -52,7 +53,7 @@
       [
         {
           'sql': 'INSERT INTO articles (title, author, authorUrl, category,publishedOn, body) VALUES (?, ?, ?, ?, ?, ?);',
-          'data': [this.title, this.author, this.authorURL, this.category, this.publishedOn, this.body],
+          'data': [this.title, this.author, this.authorURL, this.category, this.publishedOn, this.body]
         }
       ],
       callback
@@ -64,7 +65,8 @@
     webDB.execute(
       [
         {
-          /* ... */
+          'sql': 'DELETE FROM articles WHERE id = ?;',
+          'data': [this.id]
         }
       ],
       callback
@@ -75,7 +77,10 @@
   Article.prototype.updateRecord = function(callback) {
     webDB.execute(
       [
-        /* ... */
+        {
+        'sql': 'UPDATE articles SET title = ?, author = ?, authorUrl = ?, category = ?, publishedOn = ?, body = ?, WHERE id = ?;',
+        'data': [this.title, this.author, this.authorURL, this.category, this.publishedOn, this.body, this.id]
+        }
       ],
       callback
     );
@@ -95,19 +100,21 @@
     webDB.execute('', function(rows) {
       if (rows.length) {
         // Now instanitate those rows with the .loadAll function, and pass control to the view.
-
+        Article.loadAll(rows);
+        next();
       } else {
         $.getJSON('/data/hackerIpsum.json', function(rawData) {
           // Cache the json, so we don't need to request it next time:
           rawData.forEach(function(item) {
             var article = new Article(item); // Instantiate an article based on item from JSON
             // Cache the newly-instantiated article in DB:
-
+            article.insertRecord();
           });
           // Now get ALL the records out the DB, with their database IDs:
           webDB.execute('', function(rows) {
             // Now instanitate those rows with the .loadAll function, and pass control to the view.
-
+            Article.loadAll(rows);
+            next();
           });
         });
       }
