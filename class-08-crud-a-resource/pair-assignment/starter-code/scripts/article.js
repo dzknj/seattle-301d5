@@ -22,7 +22,7 @@
   // TODO: Set up a DB table for articles.
   Article.createTable = function(callback) {
     webDB.execute(
-      'CREATE TABLES IF NOT EXISTS articles(' +
+      'CREATE TABLE IF NOT EXISTS articles (' +
       'id INTEGER PRIMARY KEY,' +
       'title VARCHAR(255) NOT NULL,' +
       'author VARCHAR(255) NOT NULL,' +
@@ -38,7 +38,7 @@
     );
   };
 
-  // TODO: Correct the SQL to delete all records from the articles table.
+ // TODO: Correct the SQL to delete all records from the articles table.
   Article.truncateTable = function(callback) {
     webDB.execute(
       'DELETE FROM articles;',
@@ -53,7 +53,7 @@
       [
         {
           'sql': 'INSERT INTO articles (title, author, authorUrl, category,publishedOn, body) VALUES (?, ?, ?, ?, ?, ?);',
-          'data': [this.title, this.author, this.authorURL, this.category, this.publishedOn, this.body]
+          'data': [this.title, this.author, this.authorURL, this.category, this.publishedOn, this.body],
         }
       ],
       callback
@@ -78,14 +78,13 @@
     webDB.execute(
       [
         {
-        'sql': 'UPDATE articles SET title = ?, author = ?, authorUrl = ?, category = ?, publishedOn = ?, body = ?, WHERE id = ?;',
+        'sql': 'UPDATE articles SET title = ?, author = ?, authorUrl = ?, category = ?, publishedOn = ?, body = ? WHERE id = ?;',
         'data': [this.title, this.author, this.authorURL, this.category, this.publishedOn, this.body, this.id]
         }
       ],
       callback
     );
   };
-
   // DONE: Refactor to expect the raw data from the database, rather than localStorage.
   Article.loadAll = function(rows) {
     Article.all = rows.map(function(ele) {
@@ -97,7 +96,7 @@
   // we need to retrieve the JSON and process it.
   // If the DB has data already, we'll load up the data (sorted!), and then hand off control to the View.
   Article.fetchAll = function(next) {
-    webDB.execute('', function(rows) {
+    webDB.execute('SELECT * FROM articles ORDER BY publishedOn DESC', function(rows) {
       if (rows.length) {
         // Now instanitate those rows with the .loadAll function, and pass control to the view.
         Article.loadAll(rows);
@@ -111,7 +110,7 @@
             article.insertRecord();
           });
           // Now get ALL the records out the DB, with their database IDs:
-          webDB.execute('', function(rows) {
+          webDB.execute('SELECT * FROM articles', function(rows) {
             // Now instanitate those rows with the .loadAll function, and pass control to the view.
             Article.loadAll(rows);
             next();
