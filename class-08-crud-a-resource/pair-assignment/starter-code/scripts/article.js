@@ -22,7 +22,14 @@
   // TODO: Set up a DB table for articles.
   Article.createTable = function(callback) {
     webDB.execute(
-      '...',
+      'CREATE TABLES IF NOT EXISTS articles('+' id INTEGER PRIMARY KEY,' +
+      'title VARCHAR(255) NOT NULL,' +
+      'author VARCHAR(255) NOT NULL,' +
+      'authorUrl VARCHAR (255),' +
+      'category VARCHAR(20),' +
+      'publishedOn DATETIME,' +
+      'body TEXT NOT NULL);',
+      // ');',
       function(result) {
         console.log('Successfully set up the articles table.', result);
         if (callback) callback();
@@ -33,7 +40,7 @@
   // TODO: Correct the SQL to delete all records from the articles table.
   Article.truncateTable = function(callback) {
     webDB.execute(
-      'DELETE ...;',
+      'DELETE FROM articles;',
       callback
     );
   };
@@ -44,8 +51,8 @@
     webDB.execute(
       [
         {
-          'sql': '...;',
-          'data': [],
+          'sql': 'INSERT INTO articles (title, author, authorUrl, category,publishedOn, body) VALUES (?, ?, ?, ?, ?, ?);',
+          'data': [this.title, this.author, this.authorURL, this.category, this.publishedOn, this.body],
         }
       ],
       callback
