@@ -2,3 +2,8 @@
 // linked to a a single controller function to handle it:
 
 // TODO: What function do you call to activate page.js? Fire it off now, to execute
+
+page('/', articlesController.index);
+page('/about', aboutController.index);
+
+page();
