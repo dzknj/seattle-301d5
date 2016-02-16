@@ -3,18 +3,17 @@
 
   repos.all = [];
 
-  repos.requestRepos = function(callback) {
-    // TODO: How would you like to fetch your repos? Don't forget to call the callback.
-    console.log(githubToken);
+  repos.requestRepos = function(next) {
+    // DONE: How would you like to fetch your repos? Don't forget to call the callback.
     $.ajax({
-      url: 'https://api.github.com/users/dzknj/repos',
+      url: 'https://api.github.com/users/Ho-Luc/repos',
       type: 'GET',
-      headers: {'Authorization':'token' + githubToken},
+      headers: {'Authorization':'token ' + githubToken},
       success: function(data, message, xhr) {
         console.log(data);
+        repos.all = data;
       }
-    });
-    // .done(callback);
+    }).done(next);
   };
 
   // DONE: Model method that filters the full collection for repos with a particular attribute.
