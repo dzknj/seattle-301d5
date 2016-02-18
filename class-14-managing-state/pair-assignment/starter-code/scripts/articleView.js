@@ -12,7 +12,26 @@
     return template(article);
   };
 
-  // COMMENT: What does this method do?  What is it's execution path?
+  // COMMENT: Populate Filters has two variables declared at the beginning: options and template.
+
+  // options is undefined at the beginning and template is = to a template found by handlebars compiling the text at
+  // the element "#option-template".
+  // Article.allAuthors is run and the result is mapped by an anonymous function.
+  // Article.allAuthors runs a function against each value of the Article.all array
+  // and returns an array filled with the values of the author of each article.
+  // It then cycles through that array with .reduce and for each element in the array,
+  // it checks whether that element exists in a new array we are making.
+  // If it doesn't exist in the new array it is pushed to the new array. If it does already exist,
+  // it is ignored because the index is greater than -1.
+  // This way we have filtered out all duplicates.
+  // The returned array is than mapped by an anonymous function. This function returns an array filled with objects that have been
+  // handlebars.compiled. The objects each have a val property = to the name of the author passed in by the parameter.
+  // Each object's val property will be different from each other and will be = to one of the author names in the array created earlier.
+  // If the option element inside #author-filter only has "filter by authors" as an option, then append to author-flter all of
+  // the available options from var options.
+  // Article.allCategories does a sql search for distinct categories. The anonymous callback then takes this result of this search as a
+  // parameter called rows. If the option element inside #category-filter only has "filter by categories" as an option, then it appends to category-flter all of
+  // the available category options from the rows parameter.
   articleView.populateFilters = function() {
     var options,
       template = Handlebars.compile($('#option-template').text());
@@ -37,49 +56,18 @@
     });
   };
 
-  // COMMENT: What does this method do?  What is it's execution path?
+  // COMMENT:
+  // handleFilters attaches an event handler that only occurs once per element per event type. Change happens when the value is changed.
+  // Select occurs when text is highlighted. Resource is set to be the value of the current elements id without -filter at the end.
+  // The page function is then run at the endpoint specified. An example of this would be /author/bob. author would be the value of resource and
+  // bob would be the value of $(this).val();
+  // Whenever articleView index is called, than midway through articleView.handleFilters is called.
   articleView.handleFilters = function() {
     $('#filters').one('change', 'select', function() {
       resource = this.id.replace('-filter', '');
       page('/' + resource + '/' + $(this).val().replace(/\W+/g, '+')); // Replace any/all whitespace with a +
     });
   };
-  // articleView.handleAuthorFilter = function() {
-  //   $('#author-filter').on('change', function() {
-  //     if ($(this).val()) {
-  //       $('article').hide();
-  //       $('article[data-author="' + $(this).val() + '"]').fadeIn();
-  //     } else {
-  //       $('article').fadeIn();
-  //       $('article.template').hide();
-  //     }
-  //     $('#category-filter').val('');
-  //   });
-  // };
-  //
-  // articleView.handleCategoryFilter = function() {
-  //   $('#category-filter').on('change', function() {
-  //     if ($(this).val()) {
-  //       $('article').hide();
-  //       $('article[data-category="' + $(this).val() + '"]').fadeIn();
-  //     } else {
-  //       $('article').fadeIn();
-  //       $('article.template').hide();
-  //     }
-  //     $('#author-filter').val('');
-  //   });
-  // };
-
-  // DONE: Remove the setTeasers method, and replace with a plain ole link in the article template.
-  // articleView.setTeasers = function() {
-  //   $('.article-body *:nth-of-type(n+2)').hide();
-  //
-  //   $('#articles').on('click', 'a.read-on', function(e) {
-  //     e.preventDefault();
-  //     $(this).parent().find('*').fadeIn();
-  //     $(this).hide();
-  //   });
-  // };
 
   articleView.initNewArticlePage = function() {
     $('#articles').show().siblings().hide();
@@ -117,7 +105,14 @@
     $('#article-json').val(JSON.stringify(article) + ',');
   };
 
-  // COMMENT: What does this method do?  What is it's execution path?
+  // COMMENT: It shows all articles and hides the about sibling.
+    // It then removes all of the articles.
+    // It then appends rendered articles from the array passed in through the parameter.
+    // PopulateFilters is called and we explained this up above.
+    // HandleFilters is then called and we explained this up above.
+    // If there is more than one article run, hide all paragraph elements after the first one
+    // ArticleView.index is run whenever articlesController.index is run.
+
   articleView.index = function(articles) {
     $('#articles').show().siblings().hide();
 
@@ -127,7 +122,13 @@
     });
 
     articleView.populateFilters();
-    // COMMENT: What does this method do?  What is it's execution path?
+    // COMMENT:
+    // We explained this up above
+    // handleFilters attaches an event handler that only occurs once per element per event type. Change happens when the value is changed.
+    // Select occurs when text is highlighted. Resource is set to be the value of the current elements id without -filter at the end.
+    // The page function is then run at the endpoint specified. An example of this would be /author/bob. author would be the value of resource and
+    // bob would be the value of $(this).val();
+    // Whenever articleView index is called, than midway through articleView.handleFilters is called.
     articleView.handleFilters();
 
     // DONE: Replace setTeasers with just the truncation logic, if needed:
