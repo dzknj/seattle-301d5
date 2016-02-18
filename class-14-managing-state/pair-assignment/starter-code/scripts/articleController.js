@@ -7,10 +7,15 @@
     articleView.index(ctx.articles);
   };
 
-  // COMMENT: What does this method do?  What is it's execution path?
+  // COMMENT:This method is first ran by routes when the endpoint /article/:id is hit.
+  // It takes context (ctx) and next as parameters. Ctx is the object that is assigned
+  // the properties we are working with and stored for later use. And Next is the callback
+  // function representing the next funtion. We set ctx.articles
   articlesController.loadById = function(ctx, next) {
     var articleData = function(article) {
       ctx.articles = article;
+      console.log(article);
+      console.log(ctx);
       next();
     };
 
